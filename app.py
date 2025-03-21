@@ -11,7 +11,7 @@ import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-api_key = 'a50fcc56-0781-4abc-956a-cfabd358deea'
+api_key = 'API_KEY'
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 #2MB max file size
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
