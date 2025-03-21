@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dockerfile Security Analyzer</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+    }
+
+    .instruction-box {
+      padding: 20px;
+      background: #ecf5ff;
+      border-radius: 8px;
+      border-left: 4px solid #3498db;
+      margin-bottom: 25px;
+    }
+
+    .instruction-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0;
+    }
+
+    .instruction-box li {
+      margin: 8px 0;
+      padding-left: 20px;
+      position: relative;
+      color: #2c3e50;
+    }
+
+    .instruction-box li:before {
+      content: "•";
+      color: #3498db;
+      position: absolute;
+      left: 0;
+    }
+
+    .upload-container {
+      border: 2px dashed #95a5a6;
+      border-radius: 8px;
+      padding: 40px 20px;
+      text-align: center;
+      background-color: #fafafa;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 20px 0;
+    }
+
+    .upload-container:hover {
+      border-color: #3498db;
+      background-color: #f0f8ff;
+    }
+
+    .analyze-button {
+      background: #3498db;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s ease;
+      display: block;
+      width: 100%;
+      max-width: 200px;
+      margin: 20px auto 0;
+    }
+
+    .analyze-button:hover {
+      background: #2980b9;
+    }
+
+    .file-button {
+      background: none;
+      color: #3498db;
+      padding: 10px 20px;
+      border: 2px solid #3498db;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+
+    .file-button:hover {
+      background: #3498db;
+      color: white;
+    }
+
+    .divider {
+      margin: 15px auto;
+      width: 50px;
+      border: 0;
+      border-top: 1px solid #95a5a6;
+    }
+
+    #fileInfo {
+      color: #7f8c8d;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    #fileElem {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dockerfile Security Analyzer</h1>
+    
+    <div class="instruction-box">
+      <p>Upload a Dockerfile to generate a Software Bill of Materials (SBOM) and vulnerability report.</p>
+      <ul>
+        <li>Maximum file size: <strong>2MB</strong></li>
+        <li>File must have no extensions</li>
+        <li>File must pass antivirus scan</li>
+      </ul>
+    </div>
+
+    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
+      <div class="upload-container" onclick="document.getElementById('fileElem').click();">
+        <p>Drag and drop your Dockerfile here</p>
+        <hr class="divider">
+        <p>or</p>
+        <input type="file" id="fileElem" name="file" class="file-input">
+        <button type="button" class="file-button">Choose File</button>
+        <div id="fileInfo"></div>
+      </div>
+      <button type="submit" class="analyze-button">Analyze Dockerfile</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('fileElem').addEventListener('change', function(event) {
+      let fileInfo = document.getElementById('fileInfo');
+      fileInfo.innerHTML = `<p style="margin-top: 10px; color: #27ae60;">${event.target.files[0].name}</p>`;
+    });
+  </script>
+</body>
+</html>

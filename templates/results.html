@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Analysis Results - Dockerfile Security Analyzer</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-section {
+            padding: 20px;
+            background: #ecf5ff;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 25px;
+        }
+
+        .result-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .result-section li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            color: #2c3e50;
+        }
+
+        .result-section li:before {
+            content: "•";
+            color: #3498db;
+            position: absolute;
+            left: 0;
+        }
+
+        pre {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .result-section pre {
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0;
+            tab-size: 4;
+        }
+
+        .result-section pre strong {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        /* Remove extra indentation from CVEs */
+        .result-section.cves pre {
+            text-indent: -8px;
+            padding-left: 23px;
+        }
+
+        .back-button {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #2980b9;
+        }
+
+        .download-button {
+            background: #27ae60;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .download-button:hover {
+            background: #219a52;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Analysis Results</h1>
+        
+        <div class="result-section">
+            <h2>Extracted Technologies</h2>
+            <ul>
+                {% for tech in technologies %}
+                    <li>{{ tech.technology }}: {{ tech.version }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="result-section">
+            <h2>Original Dockerfile</h2>
+            <pre>{{ dockerfile_content }}</pre>
+        </div>
+
+        <div class="result-section">
+            <h2>Found CPEs for technologies</h2>
+            <pre>{{ cpes|join('\n') }}</pre>
+        </div>
+
+        <div class="result-section">
+            <h2>Found CVEs</h2>
+            <pre>{% for cve in cves %}{% set parts = cve.split(': ', 1) %}<strong>{{ parts[0] }}</strong>: {{ parts[1] }}<br>{% endfor %}</pre>
+        </div>
+        
+        <div class="result-section">
+            <h2>Software Bill of Materials (SBOM)</h2>
+            <pre>{{ sbom|safe }}</pre>
+        </div>
+        <form action="{{ url_for('download_sbom') }}" method="post" style="display: inline;">
+            <input type="hidden" name="sbom_data" value="{{ sbom }}">
+            <button type="submit" class="download-button">Download SBOM</button>
+        </form>
+
+        <a href="/" class="back-button">Back to Upload</a>
+    </div>
+</body>
+</html>
