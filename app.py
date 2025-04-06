@@ -16,7 +16,7 @@ import tempfile
 import shutil
 
 app = Flask(__name__)
-api_key = 'a50fcc56-0781-4abc-956a-cfabd358deea'
+api_key = 'TEST'
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 # 2MB max file size for uploads
 UPLOAD_FOLDER = 'uploads' # Creates a folder named 'uploads' in the current directory
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # sets the upload folder to the one created above
