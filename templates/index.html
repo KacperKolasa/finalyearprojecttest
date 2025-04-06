@@ -91,7 +91,7 @@
       background: #2980b9;
     }
 
-    .file-button {
+    .file-button{
       background: none;
       color: #3498db;
       padding: 10px 20px;
@@ -101,6 +101,10 @@
       font-size: 14px;
       transition: all 0.3s ease;
       margin-top: 15px;
+    }
+
+    .file-elem{
+      display: none;
     }
 
     .file-button:hover {
@@ -129,7 +133,6 @@
 <body>
   <div class="container">
     <h1>Dockerfile Security Analyzer</h1>
-    
     <div class="instruction-box">
       <p>Upload a Dockerfile to generate a Software Bill of Materials (SBOM) and vulnerability report.</p>
       <ul>
@@ -138,25 +141,49 @@
         <li>File must pass antivirus scan</li>
       </ul>
     </div>
+    
+    <!-- Static Analysis Section -->
+    <div class="instruction-box">
+        <h2>Static Analysis</h2>
+        <form id="uploadStaticForm" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="upload-container" onclick="document.getElementById('fileElemStatic').click();">
+                <p>Upload Dockerfile for Static Analysis</p>
+                <hr class="divider">
+                <input type="file" id="fileElemStatic" class="file-elem" name="file">
+                <button type="button" class="file-button">Choose File</button>
+                <div id="fileInfoStatic"></div>
+            </div>
+            <button type="submit" class="analyze-button">Run Static Analysis</button>
+        </form>
+    </div>
 
-    <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
-      <div class="upload-container" onclick="document.getElementById('fileElem').click();">
-        <p>Drag and drop your Dockerfile here</p>
-        <hr class="divider">
-        <p>or</p>
-        <input type="file" id="fileElem" name="file" class="file-input">
-        <button type="button" class="file-button">Choose File</button>
-        <div id="fileInfo"></div>
-      </div>
-      <button type="submit" class="analyze-button">Analyze Dockerfile</button>
-    </form>
-  </div>
+    <!-- Live Image Analysis Section -->
+    <div class="instruction-box" style="margin-top: 30px;">
+        <h2>Live Image Analysis</h2>
+        <form id="uploadLiveForm" action="/upload_live" method="post" enctype="multipart/form-data">
+            <div class="upload-container" onclick="document.getElementById('fileElemLive').click();">
+                <p>Upload Dockerfile for Live Analysis</p>
+                <hr class="divider">
+                <input type="file" id="fileElemLive" class="file-elem" name="file">
+                <button type="button" class="file-button">Choose File</button>
+                <div id="fileInfoLive"></div>
+            </div>
+            <button type="submit" class="analyze-button">Build & Scan Image</button>
+        </form>
+    </div>
+</div>
 
-  <script>
-    document.getElementById('fileElem').addEventListener('change', function(event) {
-      let fileInfo = document.getElementById('fileInfo');
-      fileInfo.innerHTML = `<p style="margin-top: 10px; color: #27ae60;">${event.target.files[0].name}</p>`;
+<script>
+    // Add event listeners for both file inputs
+    document.getElementById('fileElemStatic').addEventListener('change', function(event) {
+        document.getElementById('fileInfoStatic').innerHTML = 
+            `<p style="margin-top: 10px; color: #27ae60;">${event.target.files[0].name}</p>`;
     });
-  </script>
+    
+    document.getElementById('fileElemLive').addEventListener('change', function(event) {
+        document.getElementById('fileInfoLive').innerHTML = 
+            `<p style="margin-top: 10px; color: #27ae60;">${event.target.files[0].name}</p>`;
+    });
+</script>
 </body>
 </html>

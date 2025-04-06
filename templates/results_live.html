@@ -136,39 +136,11 @@
 <body>
     <div class="container">
         <h1>Analysis Results</h1>
-        
-        <div class="result-section">
-            <h2>Extracted Technologies</h2>
-            <ul>
-                {% for tech in technologies %}
-                    <li>{{ tech.technology }}: {{ tech.version }}</li>
-                {% endfor %}
-            </ul>
-        </div>
 
         <div class="result-section">
             <h2>Original Dockerfile</h2>
             <pre>{{ dockerfile_content }}</pre>
         </div>
-
-        <div class="result-section">
-            <h2>Found CPEs for technologies</h2>
-            <pre>{{ cpes|join('\n') }}</pre>
-        </div>
-
-        <div class="result-section">
-            <h2>Found CVEs</h2>
-            <pre>{% for cve in cves %}{% set parts = cve.split(': ', 1) %}<strong>{{ parts[0] }}</strong>: {{ parts[1] }}<br>{% endfor %}</pre>
-        </div>
-        
-        <div class="result-section">
-            <h2>Software Bill of Materials (SBOM)</h2>
-            <pre>{{ sbom|safe }}</pre>
-        </div>
-        <form action="{{ url_for('download_sbom_static') }}" method="post" style="display: inline;">
-            <input type="hidden" name="sbom_data_static" value="{{ sbom }}">
-            <button type="submit" class="download-button">Download SBOM</button>
-        </form>
         {% if image_analysis %}
         <div class="result-section">
             <h2>Image Analysis Results</h2>
@@ -183,16 +155,46 @@
                 <h3>SBOM from Built Image</h3>
                 <pre>{{ image_analysis.syft|tojson(indent=2) }}</pre>
             </div>
+            <button type="button" class="download-button" onclick="downloadSBOM()">Download SBOM</button>
 
             <div class="result-section">
                 <h3>Vulnerabilities from Image Scan</h3>
                 <pre>{{ image_analysis.trivy|tojson(indent=2) }}</pre>
             </div>
+            <button type="button" class="download-button" onclick="downloadVulnerabilities()">Download Vulnerabilities</button>
+            <script>
+                function downloadSBOM() {
+                    const sbomData = {{ image_analysis.syft|tojson }};
+                    const blob = new Blob([JSON.stringify(sbomData, null, 2)], { type: 'application/json' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'sbom_live.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }
+                
+                function downloadVulnerabilities() {
+                    const vulnData = {{ image_analysis.trivy|tojson }};
+                    const blob = new Blob([JSON.stringify(vulnData, null, 2)], { type: 'application/json' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'vulnerabilities_live.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }
+                </script>
             {% endif %}
         </div>
         {% endif %}
 
         <a href="/" class="back-button">Back to Upload</a>
     </div>
+    
 </body>
 </html>
