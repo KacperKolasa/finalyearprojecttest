@@ -14,7 +14,7 @@ WORKDIR /app
 COPY . .
 
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir Flask dockerfile-parse nvdlib packaging docker
+    pip install --no-cache-dir Flask dockerfile-parse nvdlib packaging docker boto3
 
 RUN freshclam
 

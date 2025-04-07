@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, Response
+from flask import Flask, render_template, request, jsonify, send_file
 import io
 import re
 import shlex
@@ -11,15 +11,19 @@ import os
 from werkzeug.utils import secure_filename
 from packaging import version as pkg_version
 import docker
-import tarfile
 import tempfile
-import shutil
+import boto3
+from botocore.exceptions import ClientError
 
 app = Flask(__name__)
-api_key = 'TEST'
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024 # 2MB max file size for uploads
-UPLOAD_FOLDER = 'uploads' # Creates a folder named 'uploads' in the current directory
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER # sets the upload folder to the one created above
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
+api_key = 'a50fcc56-0781-4abc-956a-cfabd358deea'
 
 def parse_base_image(value):
     value = value.strip(' "\'') 
